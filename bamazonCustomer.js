@@ -28,3 +28,36 @@ function showItems() {
         askUser(data);
 });  
 }
+
+function askUser(response) {
+    inquirer
+    .prompt([
+      {
+        name: "item",
+        type: "rawlist",
+        message: "Which item would you like to buy?",
+        choices: function() {
+          var itemArray = [];
+          for (let i = 0; i < response.length; i++) {
+            itemArray.push(response[i].product_name);
+          }
+          return itemArray;
+        }
+      },
+      {
+        type: "number",
+        message: "How many units of the product would you like to purchase?",
+        name: "quantity_amount"
+      },
+    ])
+    .then(function(itemresponse) {
+      var chosenItem;
+      for (let i = 0; i < response.length; i++) {
+        if(response[i].product_name === itemresponse.item) {
+          chosenItem = response[i];
+        }
+      }
+      connection.end();
+    });
+  }
+  
