@@ -57,7 +57,10 @@ function askUser(response) {
           chosenItem = response[i];
         }
       }
-      connection.end();
+      if (parseFloat(itemresponse.quantity_amount) > chosenItem.stock_quantity) {
+        console.log("Insufficient quantity!");
+        connection.end();
+      }
     });
   }
   
