@@ -57,10 +57,35 @@ function askUser(response) {
           chosenItem = response[i];
         }
       }
-      if (parseFloat(itemresponse.quantity_amount) > chosenItem.stock_quantity) {
+      if (parseFloat(itemresponse.quantity_amount) <= chosenItem.stock_quantity) {
+        var new_quantity = chosenItem.stock_quantity - parseFloat(itemresponse.quantity_amount);
+        fulfillOrder(parseFloat(itemresponse.quantity_amount),parseFloat(new_quantity), chosenItem);
+      }
+      else {
         console.log("Insufficient quantity!");
         connection.end();
       }
     });
   }
   
+function fulfillOrder(quantity_bought, quantity, item) {
+  var query = connection.query(
+    "UPDATE products SET ? WHERE ?",
+    [
+      {
+        stock_quantity: quantity
+      },
+      {
+        item_id: item.item_id
+      }
+    ],
+    function(err, res) {
+      if (err) throw err;
+      console.log("Your cost is: $" + (item.price * quantity_bought));
+      console.log(query.sql);
+      console.log(res);
+    }
+  );
+  connection.end();
+
+}
